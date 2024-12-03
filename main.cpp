@@ -105,6 +105,7 @@ int main() {
 
     cout << "\nNúmero de nós: " << countNodes(root) << endl;
 
+
     cout << "Número de folhas: " << countLeaves(root) << endl;
 
     return 0;
