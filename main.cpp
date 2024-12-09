@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 using namespace std;
 
 struct Node {
@@ -79,6 +80,115 @@ void printTree(Node* root, int space = 0, int COUNT = 5) {
     printTree(root->left, space);
 }
 
+Node* localizaMin(Node* root) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    if (root->left == nullptr) {
+        return root;
+    }
+
+    return localizaMin(root->left);
+}
+
+void desalocar(Node* node) {
+    delete node;
+}
+
+void remove(Node*& root, int value) {
+    if (root == nullptr) {
+        return;
+    }
+
+    if (value < root->data) {
+        remove(root->left, value);
+    } else if (value > root->data) {
+        remove(root->right, value);
+    } else {
+        
+        if (root->left != nullptr && root->right != nullptr) {
+            Node* auxPoint = localizaMin(root->right);
+            root->data = auxPoint->data;
+            remove(root->right, auxPoint->data);
+        }
+        else {
+            Node* auxPoint = root;
+            if (root->left != nullptr) {
+                root = root->left;
+            } else {
+                root = root->right;
+            }
+            desalocar(auxPoint);
+        }
+    }
+}
+
+void preOrdem(Node* root){
+
+    cout<<root->data<<" ";
+    
+    if (root->left != nullptr)
+    {
+        preOrdem(root->left);
+    }
+
+    if (root->right != nullptr)
+    {
+        preOrdem(root->right);
+    } 
+}
+
+void ordemSimetrica(Node* root){
+    if (root->left != nullptr)
+    {
+        ordemSimetrica(root->left);
+    }
+
+    cout<<root->data<<" ";
+
+    if (root->right != nullptr)
+    {
+        ordemSimetrica(root->right);
+    }   
+}
+
+void posOrdem(Node* root){
+     if (root->left != nullptr)
+    {
+        preOrdem(root->left);
+    }
+
+    if (root->right != nullptr)
+    {
+        preOrdem(root->right);
+    } 
+    cout<<root->data<<" ";
+}
+
+void nivelOrdem(Node* root){
+     if (root == nullptr) {
+        return; 
+    }
+
+    queue<Node*> q;
+    q.push(root); 
+
+    while (!q.empty()) {
+        Node* current = q.front(); 
+        q.pop(); 
+
+        cout << current->data << " ";
+
+        if (current->left != nullptr) {
+            q.push(current->left);
+        }
+        if (current->right != nullptr) {
+            q.push(current->right);
+        }
+    }
+}
+
 int main() {
     Node* root = nullptr;
     int n, value;
@@ -103,10 +213,32 @@ int main() {
     cout << "Impressão Árvore Binária:" << endl;
     printTree(root);
 
+    cout<<endl;
     cout << "\nNúmero de nós: " << countNodes(root) << endl;
-
-
     cout << "Número de folhas: " << countLeaves(root) << endl;
+
+    int removeValue;
+    cout << "Digite o número que deseja remover: " ;
+    cin >> removeValue;
+    remove(root, removeValue);
+    printTree(root);
+    cout<<endl;
+
+    cout << "Visita árvore Pre Ordem: "<<endl;
+    preOrdem(root);
+    cout<<endl;
+
+    cout << "Visita árvore Ordem Simetrica: "<<endl;
+    ordemSimetrica(root);
+    cout<<endl;
+
+    cout << "Visita árvore Pós Ordem: "<<endl;
+    posOrdem(root);
+    cout<<endl;
+
+    cout << "Visita árvore Por Nível: "<<endl;
+    nivelOrdem(root);
+    cout<<endl;
 
     return 0;
 }
